@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Political Reasoner - AI Insight Politik</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e40af',
+                        secondary: '#7c3aed',
+                        accent: '#059669'
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gradient-to-br from-blue-50 via-white to-purple-50 min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white/80 backdrop-blur-lg border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-gradient-to-r from-primary to-secondary p-2 rounded-lg">
+                        <i class="fas fa-brain text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                            Political Reasoner
+                        </h1>
+                        <p class="text-xs text-gray-500">AI Insight Politik Indonesia</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div id="status-indicator" class="flex items-center space-x-2">
+                        <div class="w-2 h-2 bg-gray-400 rounded-full animate-pulse"></div>
+                        <span class="text-sm text-gray-600">Checking...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">
+                Analisis Politik dengan AI
+            </h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                Dapatkan insight mendalam, sentiment analysis, dan rekomendasi kebijakan dari teks politik menggunakan kecerdasan buatan
+            </p>
+        </div>
+
+        <!-- Main Content -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Input Panel -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-2xl font-bold text-gray-900">Input Analisis</h3>
+                        <div class="flex space-x-2">
+                            <button id="clear-btn" class="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors">
+                                <i class="fas fa-eraser mr-2"></i>Clear
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Text Input -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-3">
+                            <i class="fas fa-file-text mr-2 text-primary"></i>Teks Politik untuk Dianalisis
+                        </label>
+                        <textarea 
+                            id="political-text" 
+                            rows="8" 
+                            class="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 resize-none"
+                            placeholder="Masukkan teks politik, pernyataan, artikel berita, atau konten politik lainnya yang ingin dianalisis..."
+                        ></textarea>
+                        <div class="flex justify-between items-center mt-2">
+                            <p class="text-sm text-gray-500">
+                                <span id="char-count">0</span> karakter
+                            </p>
+                            <button id="sample-text-btn" class="text-sm text-primary hover:text-secondary transition-colors">
+                                Gunakan contoh teks
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Policy Context -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-3">
+                            <i class="fas fa-balance-scale mr-2 text-secondary"></i>Konteks Kebijakan (Opsional)
+                        </label>
+                        <input 
+                            type="text" 
+                            id="policy-context"
+                            class="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-200"
+                            placeholder="Contoh: Kebijakan ekonomi digital, reformasi pendidikan, dll."
+                        >
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex flex-wrap gap-3">
+                        <button id="analyze-btn" class="flex-1 min-w-[200px] bg-gradient-to-r from-primary to-blue-600 text-white py-3 px-6 rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-200 font-medium shadow-lg hover:shadow-xl">
+                            <i class="fas fa-search mr-2"></i>Analisis Dasar
+                        </button>
+                        <button id="complete-analysis-btn" class="flex-1 min-w-[200px] bg-gradient-to-r from-secondary to-purple-600 text-white py-3 px-6 rounded-xl hover:from-purple-600 hover:to-purple-700 transition-all duration-200 font-medium shadow-lg hover:shadow-xl">
+                            <i class="fas fa-chart-line mr-2"></i>Analisis Lengkap
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Chat Interface -->
+                <div class="bg-white rounded-2xl shadow-xl p-6 border border-gray-100 mt-8">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-6">
+                        <i class="fas fa-comments mr-3 text-accent"></i>Chat AI Politik
+                    </h3>
+                    
+                    <div id="chat-messages" class="h-64 overflow-y-auto bg-gray-50 rounded-xl p-4 mb-4 space-y-3">
+                        <div class="flex items-start space-x-3">
+                            <div class="bg-accent p-2 rounded-full">
+                                <i class="fas fa-robot text-white text-sm"></i>
+                            </div>
+                            <div class="bg-white p-3 rounded-lg shadow-sm">
+                                <p class="text-gray-700">Halo! Saya siap membantu Anda menganalisis dan mendiskusikan topik politik. Silakan ajukan pertanyaan Anda.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex space-x-3">
+                        <input 
+                            type="text" 
+                            id="chat-input"
+                            class="flex-1 p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-200"
+                            placeholder="Tanyakan tentang politik, kebijakan, atau hasil analisis..."
+                            onkeypress="handleChatKeyPress(event)"
+                        >
+                        <button id="send-chat-btn" class="bg-accent text-white px-6 py-3 rounded-xl hover:bg-green-600 transition-colors">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Panel -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-2xl shadow-xl p-6 border border-gray-100 sticky top-24">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-6">Hasil Analisis</h3>
+                    
+                    <div id="results-container" class="space-y-6">
+                        <div class="text-center py-12">
+                            <i class="fas fa-chart-pie text-6xl text-gray-300 mb-4"></i>
+                            <p class="text-gray-500">Masukkan teks dan klik "Analisis" untuk melihat hasil</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Modal -->
+    <div id="loading-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center">
+        <div class="bg-white rounded-2xl p-8 max-w-sm mx-4 text-center">
+            <div class="animate-spin w-12 h-12 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">Memproses Analisis</h3>
+            <p class="text-gray-600">AI sedang menganalisis teks politik Anda...</p>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentAnalysis = null;
+        
+        // DOM elements
+        const politicalText = document.getElementById('political-text');
+        const policyContext = document.getElementById('policy-context');
+        const charCount = document.getElementById('char-count');
+        const analyzeBtn = document.getElementById('analyze-btn');
+        const completeAnalysisBtn = document.getElementById('complete-analysis-btn');
+        const clearBtn = document.getElementById('clear-btn');
+        const sampleTextBtn = document.getElementById('sample-text-btn');
+        const resultsContainer = document.getElementById('results-container');
+        const loadingModal = document.getElementById('loading-modal');
+        const chatInput = document.getElementById('chat-input');
+        const sendChatBtn = document.getElementById('send-chat-btn');
+        const chatMessages = document.getElementById('chat-messages');
+        const statusIndicator = document.getElementById('status-indicator');
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            checkHealth();
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            politicalText.addEventListener('input', updateCharCount);
+            analyzeBtn.addEventListener('click', performBasicAnalysis);
+            completeAnalysisBtn.addEventListener('click', performCompleteAnalysis);
+            clearBtn.addEventListener('click', clearAll);
+            sampleTextBtn.addEventListener('click', loadSampleText);
+            sendChatBtn.addEventListener('click', sendChatMessage);
+        }
+
+        function updateCharCount() {
+            charCount.textContent = politicalText.value.length;
+        }
+
+        function loadSampleText() {
+            politicalText.value = "Pemerintah berkomitmen untuk mempercepat digitalisasi layanan publik sebagai bagian dari transformasi digital nasional. Program ini akan meningkatkan efisiensi birokrasi dan memberikan kemudahan akses layanan bagi masyarakat. Namun, tantangan infrastruktur dan literasi digital masih menjadi hambatan utama dalam implementasinya.";
+            policyContext.value = "Transformasi digital pemerintahan";
+            updateCharCount();
+        }
+
+        function clearAll() {
+            politicalText.value = '';
+            policyContext.value = '';
+            updateCharCount();
+            resultsContainer.innerHTML = `
+                <div class="text-center py-12">
+                    <i class="fas fa-chart-pie text-6xl text-gray-300 mb-4"></i>
+                    <p class="text-gray-500">Masukkan teks dan klik "Analisis" untuk melihat hasil</p>
+                </div>
+            `;
+        }
+
+        async function checkHealth() {
+            try {
+                const response = await fetch('/health');
+                const data = await response.json();
+                updateStatusIndicator(data.status === 'healthy', data.message);
+            } catch (error) {
+                updateStatusIndicator(false, 'Connection failed');
+            }
+        }
+
+        function updateStatusIndicator(isHealthy, message) {
+            const indicator = statusIndicator.querySelector('div');
+            const text = statusIndicator.querySelector('span');
+            
+            if (isHealthy) {
+                indicator.className = 'w-2 h-2 bg-green-500 rounded-full';
+                text.textContent = 'Online';
+                text.className = 'text-sm text-green-600';
+            } else {
+                indicator.className = 'w-2 h-2 bg-red-500 rounded-full';
+                text.textContent = 'Offline';
+                text.className = 'text-sm text-red-600';
+            }
+        }
+
+        function showLoading() {
+            loadingModal.classList.remove('hidden');
+            loadingModal.classList.add('flex');
+        }
+
+        function hideLoading() {
+            loadingModal.classList.add('hidden');
+            loadingModal.classList.remove('flex');
+        }
+
+        async function performBasicAnalysis() {
+            const text = politicalText.value.trim();
+            if (!text) {
+                alert('Silakan masukkan teks untuk dianalisis');
+                return;
+            }
+
+            showLoading();
+            try {
+                const response = await fetch('/analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text })
+                });
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    displayError(data.error);
+                    return;
+                }
+                
+                currentAnalysis = data;
+                displayBasicResults(data);
+            } catch (error) {
+                displayError('Gagal melakukan analisis: ' + error.message);
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function performCompleteAnalysis() {
+            const text = politicalText.value.trim();
+            if (!text) {
+                alert('Silakan masukkan teks untuk dianalisis');
+                return;
+            }
+
+            showLoading();
+            try {
+                const response = await fetch('/complete-analysis', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        text,
+                        policy_context: policyContext.value.trim() || null
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    displayError(data.error);
+                    return;
+                }
+                
+                currentAnalysis = data;
+                displayCompleteResults(data);
+            } catch (error) {
+                displayError('Gagal melakukan analisis lengkap: ' + error.message);
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function displayBasicResults(data) {
+            // Safely access the data structure
+            const analysis = data?.analysis || {};
+            const keyInsights = data?.key_insights || {};
+            
+            // Safe access to nested properties with defaults
+            const sentimentSummary = keyInsights?.sentiment_summary || { label: 'Netral', score: 0.5 };
+            const mainTopics = keyInsights?.main_topics || [];
+            const politicalEntities = keyInsights?.political_entities || [];
+            
+            resultsContainer.innerHTML = `
+                <div class="space-y-4">
+                    <div class="bg-gradient-to-r from-blue-50 to-blue-100 p-4 rounded-xl">
+                        <h4 class="font-semibold text-blue-900 mb-2">
+                            <i class="fas fa-heart text-red-500 mr-2"></i>Sentiment
+                        </h4>
+                        <div class="flex items-center space-x-2">
+                            <div class="flex-1 bg-blue-200 rounded-full h-2">
+                                <div class="bg-blue-600 h-2 rounded-full" style="width: ${(sentimentSummary.score * 100)}%"></div>
+                            </div>
+                            <span class="text-sm font-medium text-blue-900">
+                                ${sentimentSummary.label}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gradient-to-r from-green-50 to-green-100 p-4 rounded-xl">
+                        <h4 class="font-semibold text-green-900 mb-2">
+                            <i class="fas fa-tags text-green-600 mr-2"></i>Topik Utama
+                        </h4>
+                        <div class="flex flex-wrap gap-2">
+                            ${mainTopics.map(topic => 
+                                `<span class="bg-green-200 text-green-800 px-3 py-1 rounded-full text-sm">${topic}</span>`
+                            ).join('')}
+                            ${mainTopics.length === 0 ? '<span class="text-green-600 text-sm">Tidak ada topik terdeteksi</span>' : ''}
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gradient-to-r from-purple-50 to-purple-100 p-4 rounded-xl">
+                        <h4 class="font-semibold text-purple-900 mb-2">
+                            <i class="fas fa-users text-purple-600 mr-2"></i>Entitas Politik
+                        </h4>
+                        <div class="space-y-1">
+                            ${politicalEntities.slice(0, 3).map(entity => 
+                                `<div class="text-sm text-purple-800">${entity}</div>`
+                            ).join('') || '<div class="text-sm text-purple-600">Tidak ada entitas terdeteksi</div>'}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function displayCompleteResults(data) {
+            // Safely access the nested complete_analysis structure
+            const completeAnalysis = data?.complete_analysis || {};
+            const basicAnalysis = completeAnalysis?.basic_analysis || {};
+            const keyInsights = completeAnalysis?.key_insights || {};
+            const narrative = completeAnalysis?.narrative || {};
+            const policyRecommendations = completeAnalysis?.policy_recommendations || null;
+            
+            // Safe access to nested properties with defaults
+            const sentimentSummary = keyInsights?.sentiment_summary || { label: 'Netral', score: 0.5 };
+            const mainTopics = keyInsights?.main_topics || [];
+            const politicalEntities = keyInsights?.political_entities || [];
+            
+            resultsContainer.innerHTML = `
+                <div class="space-y-4 max-h-96 overflow-y-auto">
+                    <div class="bg-gradient-to-r from-blue-50 to-blue-100 p-4 rounded-xl">
+                        <h4 class="font-semibold text-blue-900 mb-2">
+                            <i class="fas fa-heart text-red-500 mr-2"></i>Sentiment
+                        </h4>
+                        <div class="flex items-center space-x-2">
+                            <div class="flex-1 bg-blue-200 rounded-full h-2">
+                                <div class="bg-blue-600 h-2 rounded-full" style="width: ${(sentimentSummary.score * 100)}%"></div>
+                            </div>
+                            <span class="text-sm font-medium text-blue-900">
+                                ${sentimentSummary.label}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gradient-to-r from-green-50 to-green-100 p-4 rounded-xl">
+                        <h4 class="font-semibold text-green-900 mb-2">
+                            <i class="fas fa-tags text-green-600 mr-2"></i>Topik Utama
+                        </h4>
+                        <div class="flex flex-wrap gap-2">
+                            ${mainTopics.map(topic => 
+                                `<span class="bg-green-200 text-green-800 px-3 py-1 rounded-full text-sm">${topic}</span>`
+                            ).join('')}
+                            ${mainTopics.length === 0 ? '<span class="text-green-600 text-sm">Tidak ada topik terdeteksi</span>' : ''}
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gradient-to-r from-purple-50 to-purple-100 p-4 rounded-xl">
+                        <h4 class="font-semibold text-purple-900 mb-2">
+                            <i class="fas fa-users text-purple-600 mr-2"></i>Entitas Politik
+                        </h4>
+                        <div class="space-y-1">
+                            ${politicalEntities.slice(0, 3).map(entity => 
+                                `<div class="text-sm text-purple-800">${entity}</div>`
+                            ).join('') || '<div class="text-sm text-purple-600">Tidak ada entitas terdeteksi</div>'}
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gradient-to-r from-yellow-50 to-yellow-100 p-4 rounded-xl">
+                        <h4 class="font-semibold text-yellow-900 mb-2">
+                            <i class="fas fa-book-open text-yellow-600 mr-2"></i>Narasi Insight
+                        </h4>
+                        <p class="text-sm text-yellow-800 leading-relaxed">
+                            ${narrative?.narrative || 'Tidak ada narasi yang dihasilkan'}
+                        </p>
+                    </div>
+                    
+                    ${policyRecommendations && !policyRecommendations.error ? `
+                    <div class="bg-gradient-to-r from-indigo-50 to-indigo-100 p-4 rounded-xl">
+                        <h4 class="font-semibold text-indigo-900 mb-2">
+                            <i class="fas fa-lightbulb text-indigo-600 mr-2"></i>Rekomendasi Kebijakan
+                        </h4>
+                        <div class="space-y-2">
+                            ${(policyRecommendations?.recommendations || []).slice(0, 3).map(rec => 
+                                `<div class="text-sm text-indigo-800 bg-indigo-50 p-2 rounded">• ${rec}</div>`
+                            ).join('') || '<div class="text-sm text-indigo-600">Tidak ada rekomendasi yang dihasilkan</div>'}
+                        </div>
+                    </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        function displayError(message) {
+            resultsContainer.innerHTML = `
+                <div class="bg-red-50 border border-red-200 rounded-xl p-4">
+                    <div class="flex items-center">
+                        <i class="fas fa-exclamation-triangle text-red-500 mr-3"></i>
+                        <div>
+                            <h4 class="font-semibold text-red-900">Error</h4>
+                            <p class="text-sm text-red-700">${message}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function sendChatMessage() {
+            const question = chatInput.value.trim();
+            if (!question) return;
+
+            // Add user message
+            addChatMessage(question, 'user');
+            chatInput.value = '';
+
+            try {
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        question,
+                        context: currentAnalysis
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    addChatMessage('Terjadi kesalahan: ' + data.error, 'bot');
+                } else {
+                    addChatMessage(data.response?.response || 'Maaf, tidak dapat memproses pertanyaan Anda.', 'bot');
+                }
+            } catch (error) {
+                addChatMessage('Terjadi kesalahan dalam memproses pertanyaan Anda.', 'bot');
+            }
+        }
+
+        function addChatMessage(message, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'flex items-start space-x-3';
+            
+            if (sender === 'user') {
+                messageDiv.innerHTML = `
+                    <div class="bg-primary p-2 rounded-full">
+                        <i class="fas fa-user text-white text-sm"></i>
+                    </div>
+                    <div class="bg-blue-100 p-3 rounded-lg">
+                        <p class="text-gray-800">${message}</p>
+                    </div>
+                `;
+            } else {
+                messageDiv.innerHTML = `
+                    <div class="bg-accent p-2 rounded-full">
+                        <i class="fas fa-robot text-white text-sm"></i>
+                    </div>
+                    <div class="bg-white p-3 rounded-lg shadow-sm">
+                        <p class="text-gray-700">${message}</p>
+                    </div>
+                `;
+            }
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function handleChatKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendChatMessage();
+            }
+        }
+    </script>
+</body>
+</html>
